@@ -1,0 +1,2 @@
+valor##valor = 55555.6                    + 324 + "Oi Mundo"
+          valor = 5555      + "Hello World"
