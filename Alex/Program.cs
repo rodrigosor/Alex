@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alex.Analisadores;
+using System;
 
 namespace Alex
 {
@@ -10,8 +11,8 @@ namespace Alex
             {
                 if (args.Length > 0)
                 {
-                    var analisador = new Analisador(args[0]);
-                    analisador.ProcessarAnaliseLexica();
+                    var analisador = new AnalisadorLexico(args[0]);
+                    analisador.Processar();
                 }
                 else
                 {

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Alex.Artefatos;
 using System.Text;
 
-namespace Alex
+namespace Alex.Analisadores
 {
-    public class Analisador
+    public class AnalisadorLexico
     {
         /// <summary>
         /// Cursor para navegação entre caracteres do fonte em análise.
@@ -62,7 +60,7 @@ namespace Alex
         /// Cria um analisador lexico para o aqruivo.
         /// </summary>
         /// <param name="arquivo">Caminho do arquivo.</param>
-        public Analisador(string arquivo)
+        public AnalisadorLexico(string arquivo)
         {
             Lexema = string.Empty;
             Token = Token.NaoReconhecido;
@@ -129,7 +127,7 @@ namespace Alex
             Lexema += caractere;
         }
 
-        public void ProcessarAnaliseLexica()
+        public void Processar()
         {
             for (_cursor = 0; _cursor < CodigoFonte.TextoConcatenado.Length; ++_cursor)
             {

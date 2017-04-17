@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Alex
+namespace Alex.Artefatos
 {
     public class CodigoFonte
     {

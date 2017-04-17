@@ -1,4 +1,4 @@
-﻿namespace Alex
+﻿namespace Alex.Artefatos
 {
     public enum Token
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Alex
+namespace Alex.Artefatos
 {
     public class Alfabeto : List<char>
     {
