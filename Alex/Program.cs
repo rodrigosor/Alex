@@ -16,7 +16,6 @@ namespace Alex
                 else
                 {
                     Console.WriteLine("A execução do analisador deve ser: \"alex <fonte>\"\nonde <fonte> é o caminho do arquivo a ser analisado.");
-                    
                 }
             }
             catch (Exception ex)
