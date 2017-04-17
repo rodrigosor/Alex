@@ -29,12 +29,13 @@
 
         public static bool AspasDuplas(this char caractere)
         {
-            return caractere.Equals(34);
+            return caractere.Equals('"');
         }
 
         public static bool Ponto(this char caractere)
         {
-            return caractere.Equals(46);
+            return caractere.Equals('.');
         }
+
     }
 }

@@ -8,6 +8,21 @@ namespace Alex
     public class Analisador
     {
         /// <summary>
+        /// Cursor para navegação entre caracteres do fonte em análise.
+        /// </summary>
+        private int _cursor;
+
+        /// <summary>
+        /// Lexema em análise.
+        /// </summary>
+        public string Lexema { get; private set; }
+
+        /// <summary>
+        /// Manipula o possível token do lexema em análise.
+        /// </summary>
+        public Token Token { get; private set; }
+
+        /// <summary>
         /// Buffer para o resultado da análise.
         /// </summary>
         private StringBuilder _resultado;
@@ -49,6 +64,8 @@ namespace Alex
         /// <param name="arquivo">Caminho do arquivo.</param>
         public Analisador(string arquivo)
         {
+            Lexema = string.Empty;
+            Token = Token.NaoReconhecido;
             Letra = new Alfabeto("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
             Digito = new Alfabeto("0123456789");
             Simbolo = new Alfabeto("'!@#$%¨&(),:><_ ");
@@ -56,60 +73,90 @@ namespace Alex
             _resultado = new StringBuilder();
         }
 
-        private void Reconhecer(ref string lexema, Token token)
+        private void TestarToken(Token token)
         {
-            _resultado.Append(
-                    string.Format("<{0}, {1}> ", token.ToString(), lexema)
-                );
-
-            lexema = "";
+            Token = token;
         }
 
-        private void NaoReconhecer(ref string lexema, char caractere)
+        private void TestarProximoCaractereComo(Token token, char caractere)
         {
-            if (lexema.Length > 0)
+            Lexema += caractere;
+            TestarToken(token);
+        }
+
+        private void TokenNaoReconhecido()
+        {
+            --_cursor;
+            TestarToken(Token.NaoReconhecido);
+        }
+
+        private void GravarResultadoComo(Token token, char caractere)
+        {
+            if (!caractere.Simbolo(this))
             {
-                Reconhecer(ref lexema, Token.NaoReconhecido);
+                GravarReconhecimento(token);
             }
 
-            lexema += caractere;
+            TokenNaoReconhecido();
+        }
+
+        private void GravarReconhecimento(Token token)
+        {
+            _resultado.Append(
+                    string.Format("<{0}, {1}> ", token.ToString(), Lexema)
+                );
+            Lexema = "";
+        }
+
+        private void GravarReconhecimentoEFinalizar(Token token, char caractere)
+        {
+            Lexema += caractere;
+            GravarReconhecimento(Token);
+            TestarToken(Token.NaoReconhecido);
+        }
+
+        private void GravarPadraoNaoReconhecido()
+        {
+            if (Lexema.Length > 0)
+            {
+                GravarReconhecimento(Token.NaoReconhecido);
+            }
+        }
+
+        private void TestarPadraoNaoReconhecido(char caractere)
+        {
+            GravarPadraoNaoReconhecido();
+            Lexema += caractere;
         }
 
         public void ProcessarAnaliseLexica()
         {
-            // guarda o lexema em análise.
-            var lexema = string.Empty;
-
-            // configura um estado inicial.
-            var token = Token.NaoReconhecido;
-
-            for (int i = 0; i < CodigoFonte.TextoConcatenado.Length; ++i)
+            for (_cursor = 0; _cursor < CodigoFonte.TextoConcatenado.Length; ++_cursor)
             {
-                var caractere = CodigoFonte.TextoConcatenado[i];
+                var caractere = CodigoFonte.TextoConcatenado[_cursor];
 
-                switch (token)
+                switch (Token)
                 {
                     case Token.NaoReconhecido:
 
                         if (caractere.Simbolo(this))
                         {
-                            lexema += caractere;
-                            token = Token.NaoReconhecido;
+                            TestarProximoCaractereComo(Token.NaoReconhecido, caractere);
                         }
                         else if (caractere.Letra(this))
                         {
-                            NaoReconhecer(ref lexema, caractere);
-                            token = Token.ID;
+                            TestarPadraoNaoReconhecido(caractere);
+                            TestarToken(Token.ID);
                         }
                         else if (caractere.Digito(this))
                         {
-                            NaoReconhecer(ref lexema, caractere);
-                            token = Token.ConstInteira;
+                            TestarPadraoNaoReconhecido(caractere);
+                            TestarToken(Token.ConstInteira);
                         }
                         else if (caractere.AspasDuplas())
                         {
-                            NaoReconhecer(ref lexema, caractere);
-                            token = Token.ConstString;
+                            TestarPadraoNaoReconhecido(caractere);
+                            TestarToken(Token.ConstString);
                         }
 
                         break;
@@ -119,18 +166,11 @@ namespace Alex
 
                         if (caractere.LetraDigitoSublinhado(this))
                         {
-                            lexema += caractere;
-                            token = Token.ID;
+                            TestarProximoCaractereComo(Token.ID, caractere);
                         }
                         else
                         {
-                            if (!caractere.Simbolo(this))
-                            {
-                                Reconhecer(ref lexema, Token.ID);
-                            }
-
-                            --i;
-                            token = Token.NaoReconhecido;
+                            GravarResultadoComo(Token.ID, caractere);
                         }
 
                         break;
@@ -140,23 +180,15 @@ namespace Alex
 
                         if (caractere.Digito(this))
                         {
-                            lexema += caractere;
-                            token = Token.ConstInteira;
+                            TestarProximoCaractereComo(Token.ConstInteira, caractere);
                         }
                         else if (caractere.Ponto())
                         {
-                            lexema += caractere;
-                            token = Token.ConstReal;
+                            TestarProximoCaractereComo(Token.ConstReal, caractere);
                         }
                         else
                         {
-                            if (!caractere.Simbolo(this))
-                            {
-                                Reconhecer(ref lexema, Token.ConstInteira);
-                            }
-
-                            --i;
-                            token = Token.NaoReconhecido;
+                            GravarResultadoComo(Token.ConstInteira, caractere);
                         }
 
                         break;
@@ -167,18 +199,11 @@ namespace Alex
 
                         if (caractere.Digito(this))
                         {
-                            lexema += caractere;
-                            token = Token.ConstReal;
+                            TestarProximoCaractereComo(Token.ConstReal, caractere);
                         }
                         else
                         {
-                            if (!caractere.Simbolo(this))
-                            {
-                                Reconhecer(ref lexema, Token.ConstReal);
-                            }
-
-                            --i;
-                            token = Token.NaoReconhecido;
+                            GravarResultadoComo(Token.ConstReal, caractere);
                         }
 
                         break;
@@ -189,23 +214,20 @@ namespace Alex
 
                         if (caractere.LetraDigitoSimbolo(this))
                         {
-                            lexema += caractere;
-                            token = Token.ConstString;
+                            TestarProximoCaractereComo(Token.ConstString, caractere);
                         }
                         else if (caractere.AspasDuplas())
                         {
-                            Reconhecer(ref lexema, Token.ConstString);
-                            token = Token.NaoReconhecido;
+                            GravarReconhecimentoEFinalizar(Token.ConstString, caractere);
+                            //GravarReconhecimento(Token.ConstString);
+                            //TestarToken(Token.NaoReconhecido);
                         }
 
                         break;
                 }
             }
 
-            if (lexema.Length > 0)
-            {
-                Reconhecer(ref lexema, Token.NaoReconhecido);
-            }
+            GravarPadraoNaoReconhecido();
         }
     }
 }
