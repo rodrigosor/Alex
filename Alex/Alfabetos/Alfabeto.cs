@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace Alex.Artefatos
+namespace Alex.Alfabetos
 {
-    public class Alfabeto : List<char>
+    /// <summary>
+    /// Manipula um alfabeto.
+    /// </summary>
+    public abstract class Alfabeto : List<char>
     {
         /// <summary>
-        /// Cria um novo alfabeto para os simbolos informados.
+        /// Cria um novo alfabeto para os símbolos informados.
         /// </summary>
         public Alfabeto(string simbolos)
         {

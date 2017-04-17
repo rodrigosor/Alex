@@ -1,4 +1,5 @@
-﻿using Alex.Artefatos;
+﻿using Alex.Alfabetos;
+using Alex.Artefatos;
 using System.Text;
 
 namespace Alex.Analisadores
@@ -64,9 +65,9 @@ namespace Alex.Analisadores
         {
             Lexema = string.Empty;
             Token = Token.NaoReconhecido;
-            Letra = new Alfabeto("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-            Digito = new Alfabeto("0123456789");
-            Simbolo = new Alfabeto("'!@#$%¨&(),:><_ ");
+            Letra = new AlfabetoLetra();
+            Digito = new AlfabetoDigito();
+            Simbolo = new AlfabetoSimbolo();
             CodigoFonte = new CodigoFonte(arquivo);
             _resultado = new StringBuilder();
         }
@@ -100,7 +101,7 @@ namespace Alex.Analisadores
 
         private void GravarReconhecimento(Token token)
         {
-            _resultado.Append(
+            _resultado.AppendLine(
                     string.Format("<{0}, {1}> ", token.ToString(), Lexema)
                 );
             Lexema = "";
@@ -137,11 +138,7 @@ namespace Alex.Analisadores
                 {
                     case Token.NaoReconhecido:
 
-                        if (caractere.Simbolo(this))
-                        {
-                            TestarProximoCaractereComo(Token.NaoReconhecido, caractere);
-                        }
-                        else if (caractere.Letra(this))
+                        if (caractere.Letra(this))
                         {
                             TestarPadraoNaoReconhecido(caractere);
                             TestarToken(Token.ID);
@@ -155,6 +152,10 @@ namespace Alex.Analisadores
                         {
                             TestarPadraoNaoReconhecido(caractere);
                             TestarToken(Token.ConstString);
+                        }
+                        else
+                        {
+                            TestarProximoCaractereComo(Token.NaoReconhecido, caractere);
                         }
 
                         break;

@@ -1,31 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Alex.Artefatos
 {
     public class CodigoFonte
     {
-        /// <summary>
-        /// Código da tabela ASCII para o caractere de tabulação.
-        /// </summary>
-        private const int TAB = 9;
-
-        /// <summary>
-        /// Código da tabela ASCII para o caractere de nova linha (LF).
-        /// </summary>
-        private const int NOVA_LINHA = 10;
-
-        /// <summary>
-        /// Código da tabela ASCII para o caractere de qubra de linha (CR).
-        /// </summary>
-        private const int QUEBRA_LINHA = 13;
-
-        /// <summary>
-        /// Código da tabela ASCII para o caractere de espaço em branco.
-        /// </summary>
-        private const int ESPACO_BRANCO = 32;
-
         /// <summary>
         /// O texto do código fonte.
         /// </summary>
@@ -50,13 +31,14 @@ namespace Alex.Artefatos
 
                 foreach (var caractere in Texto)
                 {
-                    if (caractere != TAB && caractere != NOVA_LINHA && caractere != QUEBRA_LINHA && caractere != ESPACO_BRANCO)
+                    if (caractere != ASCII.HT && caractere != ASCII.LF && caractere != ASCII.CR)
                     {
                         buffer.Append(caractere);
                     }
                 }
 
                 TextoConcatenado = buffer.ToString();
+                //TextoConcatenado = Regex.Replace(TextoConcatenado, @"\s+", " ");
             }
             else
             {

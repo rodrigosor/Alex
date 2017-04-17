@@ -21,12 +21,17 @@ namespace Alex
 
         public static bool LetraDigitoSublinhado(this char caractere, AnalisadorLexico analisador)
         {
-            return caractere.Letra(analisador) || caractere.Digito(analisador) || (caractere.Equals(95));
+            return caractere.Letra(analisador) || caractere.Digito(analisador) || (caractere.Equals('_'));
         }
 
         public static bool LetraDigitoSimbolo(this char caractere, AnalisadorLexico analisador)
         {
             return caractere.Letra(analisador) || caractere.Digito(analisador) || caractere.Simbolo(analisador);
+        }
+
+        public static bool LetraDigitoSimboloEspaco(this char caractere, AnalisadorLexico analisador)
+        {
+            return caractere.Letra(analisador) || caractere.Digito(analisador) || caractere.Simbolo(analisador) || (caractere.Equals(' '));
         }
 
         public static bool AspasDuplas(this char caractere)

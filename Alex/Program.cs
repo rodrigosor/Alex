@@ -13,6 +13,8 @@ namespace Alex
                 {
                     var analisador = new AnalisadorLexico(args[0]);
                     analisador.Processar();
+
+                    Console.WriteLine(analisador.Resultado);
                 }
                 else
                 {

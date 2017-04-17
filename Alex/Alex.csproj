@@ -43,10 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alfabetos\AlfabetoControle.cs" />
+    <Compile Include="Alfabetos\AlfabetoLetra.cs" />
+    <Compile Include="Alfabetos\AlfabetoSimbolo.cs" />
+    <Compile Include="Analisadores\Analisador.cs" />
     <Compile Include="Analisadores\AnalisadorLexico.cs" />
+    <Compile Include="Alfabetos\AlfabetoDigito.cs" />
+    <Compile Include="Artefatos\ASCII.cs" />
     <Compile Include="Artefatos\CodigoFonte.cs" />
     <Compile Include="Extensoes\CaractereExtensao.cs" />
-    <Compile Include="Artefatos\Alfabeto.cs" />
+    <Compile Include="Alfabetos\Alfabeto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Artefatos\Token.cs" />

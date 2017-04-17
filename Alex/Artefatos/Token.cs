@@ -4,6 +4,8 @@
     {
         NaoReconhecido,
 
+        Operador,
+
         /// <summary>
         /// Deve iniciar com uma letra seguida de 0 ou mais produções de letras, dígitos e/ou caracteres _.
         /// </summary>
